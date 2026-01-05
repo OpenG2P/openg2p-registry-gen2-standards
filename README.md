@@ -1,2 +1,3 @@
-# openg2p-registry-gen2-standards
-Templates for Payloads based on standards
+# openg2p-standards-models
+
+This repository contains the OpenG2P Standards Models.
