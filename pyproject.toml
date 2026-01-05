@@ -3,11 +3,11 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "openg2p-standards-models"
+name = "openg2p-registry-gen2-standards"
 authors = [
   { name="OpenG2P", email="info@openg2p.org" },
 ]
-description = "OpenG2P Standards Models"
+description = "OpenG2P Registry Gen2 Standards"
 readme = "README.md"
 requires-python = ">=3.7"
 classifiers = [
@@ -21,8 +21,8 @@ dynamic = ["version"]
 [project.urls]
 Homepage = "https://openg2p.org"
 Documentation = "https://docs.openg2p.org/"
-Repository = "https://github.com/OpenG2P/openg2p-standards-models"
-Source = "https://github.com/OpenG2P/openg2p-standards-models"
+Repository = "https://github.com/OpenG2P/openg2p-registry-gen2-standards"
+Source = "https://github.com/OpenG2P/openg2p-registry-gen2-standards"
 
 [tool.hatch.version]
-path = "src/openg2p_standards_models/__init__.py"
+path = "src/openg2p_registry_gen2_standards/__init__.py"
