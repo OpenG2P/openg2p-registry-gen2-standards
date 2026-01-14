@@ -1,0 +1,51 @@
+{% set p = expanded[0] %}
+
+{
+  "surname": "{{ p['https://schema.spdci.org/common/v1name'][0]['https://schema.spdci.org/common/v1surname'][0]['@value'] | default('') }}",
+  "given_name": "{{ p['https://schema.spdci.org/common/v1name'][0]['https://schema.spdci.org/common/v1given_name'][0]['@value'] | default('') }}",
+  "second_name": "{{ p['https://schema.spdci.org/common/v1name'][0]['https://schema.spdci.org/common/v1second_name'][0]['@value'] | default('') }}",
+  "prefix": "{{ p['https://schema.spdci.org/common/v1name'][0]['https://schema.spdci.org/common/v1prefix'][0]['@value'] | default('') }}",
+  "suffix": "{{ p['https://schema.spdci.org/common/v1name'][0]['https://schema.spdci.org/common/v1suffix'][0]['@value'] | default('') }}",
+
+  "phone_numbers": [
+    {% for ph in p['https://schema.spdci.org/common/v1phone_number'] | default([]) %}
+      "{{ ph['@value'] }}"{% if not loop.last %},{% endif %}
+    {% endfor %}
+  ],
+
+  "emails": [
+    {% for em in p['https://schema.spdci.org/common/v1email'] | default([]) %}
+      "{{ em['@value'] }}"{% if not loop.last %},{% endif %}
+    {% endfor %}
+  ],
+
+  "sex": "{{ p['https://schema.spdci.org/common/v1sex'][0]['@value'] | default('') }}",
+  "birth_date": "{{ p['https://schema.spdci.org/common/v1birth_date'][0]['@value'] | default('') }}",
+
+  "birth_place_name": "{{ p['https://schema.spdci.org/common/v1birth_place'][0]['https://schema.spdci.org/common/v1name'][0]['@value'] | default('') }}",
+  "birth_place_lat": {{ p['https://schema.spdci.org/common/v1birth_place'][0]['https://schema.spdci.org/common/v1geo'][0]['https://schema.spdci.org/common/v1latitude'][0]['@value'] | default('null') }},
+  "birth_place_lng": {{ p['https://schema.spdci.org/common/v1birth_place'][0]['https://schema.spdci.org/common/v1geo'][0]['https://schema.spdci.org/common/v1longitude'][0]['@value'] | default('null') }},
+
+  "death_date": "{{ p['https://schema.spdci.org/common/v1death_date'][0]['@value'] | default('') }}",
+  "death_place": "{{ p['https://schema.spdci.org/common/v1death_place'][0]['@value'] | default('') }}",
+
+  "address_line1": "{{ p['https://schema.spdci.org/common/v1address'][0]['https://schema.spdci.org/common/v1address_line1'][0]['@value'] | default('') }}",
+  "address_line2": "{{ p['https://schema.spdci.org/common/v1address'][0]['https://schema.spdci.org/common/v1address_line2'][0]['@value'] | default('') }}",
+  "locality": "{{ p['https://schema.spdci.org/common/v1address'][0]['https://schema.spdci.org/common/v1locality'][0]['@value'] | default('') }}",
+  "sub_region_code": "{{ p['https://schema.spdci.org/common/v1address'][0]['https://schema.spdci.org/common/v1sub_region_code'][0]['@value'] | default('') }}",
+  "region_code": "{{ p['https://schema.spdci.org/common/v1address'][0]['https://schema.spdci.org/common/v1region_code'][0]['@value'] | default('') }}",
+  "postal_code": "{{ p['https://schema.spdci.org/common/v1address'][0]['https://schema.spdci.org/common/v1postal_code'][0]['@value'] | default('') }}",
+  "country_code": "{{ p['https://schema.spdci.org/common/v1address'][0]['https://schema.spdci.org/common/v1country_code'][0]['@value'] | default('') }}",
+
+  "plus_code": "{{ p['https://schema.spdci.org/common/v1address'][0]['https://schema.spdci.org/common/v1geo_location'][0]['https://schema.spdci.org/common/v1plus_code'][0]['https://schema.spdci.org/common/v1global_code'][0]['@value'] | default('') }}",
+
+  "geo_lat": {{ p['https://schema.spdci.org/common/v1address'][0]['https://schema.spdci.org/common/v1geo_location'][0]['https://schema.spdci.org/common/v1plus_code'][0]['https://schema.spdci.org/common/v1geometry'][0]['https://schema.spdci.org/common/v1location'][0]['https://schema.spdci.org/common/v1latitude'][0]['@value'] | default('null') }},
+  "geo_lng": {{ p['https://schema.spdci.org/common/v1address'][0]['https://schema.spdci.org/common/v1geo_location'][0]['https://schema.spdci.org/common/v1plus_code'][0]['https://schema.spdci.org/common/v1geometry'][0]['https://schema.spdci.org/common/v1location'][0]['https://schema.spdci.org/common/v1longitude'][0]['@value'] | default('null') }},
+
+  "marital_status": "{{ p['https://schema.spdci.org/common/v1marital_status'][0]['@value'] | default('') }}",
+  "marriage_date": "{{ p['https://schema.spdci.org/common/v1marriage_date'][0]['@value'] | default('') }}",
+  "divorce_date": "{{ p['https://schema.spdci.org/common/v1divorce_date'][0]['@value'] | default('') }}",
+
+  "link_internal_record_id": "{{ p['https://schema.spdci.org/common/v1link_internal_record_id'][0]['@value'] | default('') }}",
+  "foundational_id": "{{ p['https://schema.spdci.org/common/v1identifier'][0]['https://schema.spdci.org/common/v1identifier_value'][0]['@value'] | default('') }}"
+}
