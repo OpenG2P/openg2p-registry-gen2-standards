@@ -1,0 +1,76 @@
+{# =========================
+   Setup
+   ========================= #}
+{% set df = expanded['display_fields'] %}
+{% set fid = expanded['foundational_id'] %}
+{% set gid = expanded['link_internal_record_id'] %}
+{% set members = expanded['member_list'] if 'member_list' in expanded else [] %}
+{% set farms = expanded['farm_details'] if 'farm_details' in expanded else [] %}
+{% set machines = expanded['machineries_details'] if 'machineries_details' in expanded else [] %}
+
+{
+  "famer_personal_details": {
+    "member_identifier": {
+      "identifier_type": "NationalID",
+      "identifier_value": {{ '"' ~ fid ~ '"' if fid is not none else '""' }}
+    },
+    "demographic_info": {
+      "identifier": {
+        "identifier_type": "NationalID",
+        "identifier_value": {{ '"' ~ fid ~ '"' if fid is not none else '""' }}
+      },
+      "name": {
+        "first_name": {{ '"' ~ df['first_name'] ~ '"' if 'first_name' in df else '""' }},
+        "last_name": {{ '"' ~ df['last_name'] ~ '"' if 'last_name' in df else '""' }}
+      },
+      "date_of_birth": {{ '"' ~ df['date_of_birth'] ~ 'T00:00:00Z"' if 'date_of_birth' in df else '""' }},
+      "gender": {{ '"' ~ df['gender'] ~ '"' if 'gender' in df else '""' }}
+    }
+  },
+
+  "family_details": {
+    "group_identifier": [
+      {
+        "identifier_type": "NationalID",
+        "identifier_value": {{ '"' ~ gid ~ '"' if gid is not none else '""' }}
+      }
+    ],
+    "group_type": "family",
+    "poverty_score": {{ expanded['poverty_score'] if 'poverty_score' in expanded else '""' }},
+    "poverty_score_type": {{ '"' ~ expanded['poverty_score_type'] ~ '"' if 'poverty_score_type' in expanded else '""' }},
+    "group_head_info": {
+      "member_identifier": [
+        {
+          "identifier_type": "NationalID",
+          "identifier_value": {{ '"' ~ fid ~ '"' if fid is not none else '""' }}
+        }
+      ],
+      "demographic_info": {
+        "identifier": {
+          "identifier_type": "NationalID",
+          "identifier_value": {{ '"' ~ fid ~ '"' if fid is not none else '""' }}
+        },
+        "name": {
+          "first_name": {{ '"' ~ df['first_name'] ~ '"' if 'first_name' in df else '""' }},
+          "last_name": {{ '"' ~ df['last_name'] ~ '"' if 'last_name' in df else '""' }}
+        },
+        "date_of_birth": {{ '"' ~ df['date_of_birth'] ~ 'T00:00:00Z"' if 'date_of_birth' in df else '""' }},
+        "gender": {{ '"' ~ df['gender'] ~ '"' if 'gender' in df else '""' }}
+      },
+      "is_disabled": {{ 'true' if df.get('is_disabled') | string | lower == 'true' else 'false' }},
+      "marital_status": {{ '"' ~ df['marital_status'] ~ '"' if 'marital_status' in df else '""' }},
+      "registration_date": {{ '"' ~ expanded['registration_date'] ~ '"' if 'registration_date' in expanded else '""' }}
+    },
+    "group_size": {{ members | length }},
+    "member_list": {{ members }},
+    "registration_date": {{ '"' ~ expanded['registration_date'] ~ '"' if 'registration_date' in expanded else '""' }},
+    "last_updated": {{ '"' ~ expanded['last_updated'] ~ '"' if 'last_updated' in expanded else '""' }}
+  },
+
+  "farm_details": {{ farms }},
+
+  "machineries_details": {{ machines }},
+
+  "registration_date": {{ '"' ~ expanded['registration_date'] ~ '"' if 'registration_date' in expanded else '""' }},
+  "last_updated": {{ '"' ~ expanded['last_updated'] ~ '"' if 'last_updated' in expanded else '""' }}
+}
