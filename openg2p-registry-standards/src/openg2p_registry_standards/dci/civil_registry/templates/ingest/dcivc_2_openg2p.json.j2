@@ -1,0 +1,41 @@
+{% set d = expanded %}
+
+{
+  "surname": "{{ d['family_name'] | default('') }}",
+  "given_name": "{{ d['given_name'] | default('') }}",
+  "second_name": "{{ d['middle_name'] | default('') }}",
+  "prefix": "",
+  "suffix": "",
+
+  "phone_numbers": [],
+  "emails": [],
+
+  "sex": "{{ d['gender'] | default('') }}",
+  "birth_date": "{{ d['birth_date'] | default('') }}",
+
+  "birth_place_name": "{{ d['birth_place']['name'] | default('') }}",
+  "birth_place_lat": "",
+  "birth_place_lng": "",
+
+  "death_date": "",
+  "death_place": "",
+
+  "address_line1": "",
+  "address_line2": "",
+  "locality": "{{ d['birth_place']['birth_place_codes']['district'] | default('') }}",
+  "sub_region_code": "{{ d['birth_place']['birth_place_codes']['region'] | default('') }}",
+  "region_code": "{{ d['birth_place']['birth_place_codes']['region'] | default('') }}",
+  "postal_code": "",
+  "country_code": "{{ d['birth_place']['birth_place_codes']['country'] | default('') }}",
+
+  "plus_code": "",
+  "geo_lat": "",
+  "geo_lng": "",
+
+  "marital_status": "{{ d['parental_status'] | default('') }}",
+  "marriage_date": "",
+  "divorce_date": "",
+
+  "link_internal_record_id": "{{ d['link_internal_record_id'] | default('') }}",
+  "foundational_id": "{{ d['id'] | default('') }}"
+}
