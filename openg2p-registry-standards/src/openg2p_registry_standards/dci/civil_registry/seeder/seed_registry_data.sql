@@ -127,12 +127,12 @@ INSERT INTO g2p_register_sections (
 )
 VALUES
 (
-    'FamilyMember',              -- replace later
-    'TAB1',                   -- replace later
-    'uuid-123',            -- auto-generate UUID
+    'FamilyMember',  -- replace later
+    'TAB1',          -- replace later
+    'uuid-123',      -- auto-generate UUID
     'section1',      -- replace later
     FALSE,
-    'section1',         -- replace later
+    'section1',      -- replace later
     NULL,
     FALSE,
     2,
