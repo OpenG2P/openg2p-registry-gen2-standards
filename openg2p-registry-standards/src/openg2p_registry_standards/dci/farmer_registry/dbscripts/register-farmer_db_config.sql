@@ -1,11 +1,11 @@
-INSERT INTO "public"."g2p_register_definitions" ("register_id","register_mnemonic","register_subject","register_description","master_register_id","register_purpose","program_id","program_mnemonic","register_icon","has_image","dedup_is_enabled","dedup_threshold_score") VALUES 
-('21f1bb2d-ce90-4fc9-b209-69111264474c','Farmer','Farmers','Farmer Register','a82d2ab7-5b37-4834-8172-3c4df4b69f2a','REGISTER',NULL,NULL,NULL,'FALSE','FALSE',0),
-('995d7a1a-7295-4e36-b415-8e26bcdc64b3','Land','Lands','Land Register','21f1bb2d-ce90-4fc9-b209-69111264474c','REGISTER',NULL,NULL,NULL,'FALSE','FALSE',0),
-('a58f445a-4bf5-4b30-97b6-9021ddbb6844','Crop','Crops','Crop Register','995d7a1a-7295-4e36-b415-8e26bcdc64b3','REGISTER',NULL,NULL,NULL,'FALSE','FALSE',0),
-('a82d2ab7-5b37-4834-8172-3c4df4b69f2a','Household','Households','Household Register',NULL,'REGISTER',NULL,NULL,NULL,'FALSE','FALSE',0),
-('cd27cd28-8f01-484a-a2bf-a6e299f3f07a','Livestock','Livestock','Livestock Register','995d7a1a-7295-4e36-b415-8e26bcdc64b3','REGISTER',NULL,NULL,NULL,'FALSE','FALSE',0),
-('cd2aa036-414b-457a-8b5b-2b864a433bec','HouseholdMember','Household Members','Household Member Register','a82d2ab7-5b37-4834-8172-3c4df4b69f2a','REGISTER',NULL,NULL,NULL,'FALSE','FALSE',0),
-('e4e66c46-bb0a-4c9f-8090-1e115e0b69d0','Machinery','Machinery','Machinery Register','21f1bb2d-ce90-4fc9-b209-69111264474c','REGISTER',NULL,NULL,NULL,'FALSE','FALSE',0);
+INSERT INTO "public"."g2p_register_definitions" ("register_id","register_mnemonic","register_subject","register_description","master_register_id","register_purpose","program_id","program_mnemonic","register_icon","has_image","dedup_is_enabled","dedup_threshold_score","register_rank") VALUES 
+('21f1bb2d-ce90-4fc9-b209-69111264474c','Farmer','Farmers','Farmer Register','a82d2ab7-5b37-4834-8172-3c4df4b69f2a','REGISTER',NULL,NULL,NULL,'FALSE','FALSE',0,1),
+('995d7a1a-7295-4e36-b415-8e26bcdc64b3','Land','Lands','Land Register','21f1bb2d-ce90-4fc9-b209-69111264474c','TABLE',NULL,NULL,NULL,'FALSE','FALSE',0,4),
+('a58f445a-4bf5-4b30-97b6-9021ddbb6844','Crop','Crops','Crop Register','995d7a1a-7295-4e36-b415-8e26bcdc64b3','TABLE',NULL,NULL,NULL,'FALSE','FALSE',0,5),
+('a82d2ab7-5b37-4834-8172-3c4df4b69f2a','Household','Households','Household Register',NULL,'REGISTER',NULL,NULL,NULL,'FALSE','FALSE',0,2),
+('cd27cd28-8f01-484a-a2bf-a6e299f3f07a','Livestock','Livestock','Livestock Register','995d7a1a-7295-4e36-b415-8e26bcdc64b3','TABLE',NULL,NULL,NULL,'FALSE','FALSE',0,6),
+('cd2aa036-414b-457a-8b5b-2b864a433bec','HouseholdMember','Household Members','Household Member Register','a82d2ab7-5b37-4834-8172-3c4df4b69f2a','TABLE',NULL,NULL,NULL,'FALSE','FALSE',0,3),
+('e4e66c46-bb0a-4c9f-8090-1e115e0b69d0','Machinery','Machinery','Machinery Register','21f1bb2d-ce90-4fc9-b209-69111264474c','TABLE',NULL,NULL,NULL,'FALSE','FALSE',0,7);
 
 INSERT INTO "public"."g2p_register_sections" ("register_id","tab_id","section_id","section_register_id","is_primary_section","section_order","section_mnemonic","section_description","documents_required","no_of_verifications_required","auto_approval","is_list","section_ui_schema") VALUES 
 ('21f1bb2d-ce90-4fc9-b209-69111264474c','farmer_tab','section-1','21f1bb2d-ce90-4fc9-b209-69111264474c','TRUE',1,'personal_identification',NULL,'TRUE',0,'FALSE','FALSE','{"sections": [{"panels": [{"panels": [{"widgets": [{"widget": "text", "widget-id": "first_name", "widget-type": "input", "widget-label": "first_name", "widget-readonly": false, "widget-required": true, "widget-data-path": "20a9362c-92d2-4c2c-b373-f09cfb3ded7b.first_name"}, {"widget": "text", "widget-id": "last_name", "widget-type": "input", "widget-label": "last_name", "widget-readonly": false, "widget-required": true, "widget-data-path": "20a9362c-92d2-4c2c-b373-f09cfb3ded7b.last_name"}, {"widget": "date", "widget-id": "date_of_birth", "widget-type": "input", "widget-label": "date_of_birth", "widget-readonly": false, "widget-required": true, "widget-data-path": "20a9362c-92d2-4c2c-b373-f09cfb3ded7b.date_of_birth"}], "panel-id": "panel_farmer_identification_left", "panel-orientation": "vertical"}, {"widgets": [{"widget": "select", "widget-id": "marital_status", "widget-type": "input", "widget-label": "marital_status", "widget-readonly": false, "widget-required": false, "widget-data-path": "20a9362c-92d2-4c2c-b373-f09cfb3ded7b.marital_status", "widget-data-source": {"type": "static", "options": [{"label": "single", "value": "single"}, {"label": "married", "value": "married"}, {"label": "divorced", "value": "divorced"}, {"label": "widowed", "value": "Widowed"}]}}, {"widget": "radio", "widget-id": "gender", "widget-type": "input", "widget-label": "gender", "widget-readonly": false, "widget-required": true, "widget-data-path": "20a9362c-92d2-4c2c-b373-f09cfb3ded7b.gender", "widget-data-source": {"type": "static", "options": [{"label": "male", "value": "Male"}, {"label": "female", "value": "Female"}, {"label": "other", "value": "other"}]}, "widget-orientation": "vertical"}], "panel-id": "panel:farmer.identification.right", "panel-orientation": "vertical"}, {"panel-id": "blank pannel", "panel-orientation": "vertical"}], "panel-id": "panel_farmer_identification", "panel-orientation": "horizontal"}], "section-id": "section-1", "section-title": "personal_identification", "section-editable": true, "section-supporting-documents": [{"document-type": "image", "document-required": true, "document-data-path": "national_id_card"}]}]}'),
@@ -39,3 +39,18 @@ INSERT INTO "public"."data_models" ("data_model_id","data_model_mnemonic","patte
 
 INSERT INTO "public"."outgoing_templates" ("template_id","data_model_id","register_id","template_file_id","created_at","updated_at") VALUES 
 ('TPL-OUT-1','DM1','21f1bb2d-ce90-4fc9-b209-69111264474c','openg2p_farmer_to_dci.json.j2','2026-01-20 04:38:31.448826',NULL);
+
+INSERT INTO "public"."g2p_attributes" ("attribute_id","attribute_code","attribute_display","is_hierarchical") VALUES 
+('FERTILIZER_TYPE','FERTILIZER_TYPE','Fertilizer Type','FALSE'),
+('WATER_SOURCE','WATER_SOURCE','Water Source','FALSE');
+
+INSERT INTO "public"."g2p_attribute_values" ("value_id","attribute_id","value_code","value_display","parent_value_id","sort_order") VALUES 
+('DRIP_IRRIGATION','WATER_SOURCE','DRIP_IRRIGATION','Drip Irrigation',NULL,1),
+('GROUND_WATER','WATER_SOURCE','GROUND_WATER','Ground Water',NULL,3),
+('HOUSEHOLD_COMPOST','FERTILIZER_TYPE','HOUSEHOLD_COMPOST','Household Compost',NULL,1),
+('MUNICIPAL_WATER','WATER_SOURCE','MUNICIPAL_WATER','Municipal Water',NULL,5),
+('NPK','FERTILIZER_TYPE','NPK','NPK',NULL,2),
+('POULTRY_WASTE','FERTILIZER_TYPE','POULTRY_WASTE','Poultry Waste',NULL,4),
+('RAIN_WATER','WATER_SOURCE','RAIN_WATER','Rain Water',NULL,2),
+('RIVER','WATER_SOURCE','RIVER','River',NULL,4),
+('UREA','FERTILIZER_TYPE','UREA','Urea',NULL,3);
