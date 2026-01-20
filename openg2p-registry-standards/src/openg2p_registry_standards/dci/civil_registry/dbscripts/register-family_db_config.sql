@@ -1,6 +1,6 @@
-INSERT INTO "public"."g2p_register_definitions" ("register_id","register_mnemonic","register_subject","register_description","master_register_id","register_purpose","program_id","program_mnemonic","register_icon","has_image","dedup_is_enabled","dedup_threshold_score") VALUES 
-('2ee76070-76eb-44af-8c1a-8593ef19e3b5','Family','Families','Family Register',NULL,'REGISTER',NULL,NULL,NULL,'FALSE','FALSE',0),
-('df634318-ef1b-424c-8173-0a5aa1a4b4af','FamilyMember','Family Members','Family Member Register','2ee76070-76eb-44af-8c1a-8593ef19e3b5','REGISTER',NULL,NULL,NULL,'FALSE','FALSE',0);
+INSERT INTO "public"."g2p_register_definitions" ("register_id","register_mnemonic","register_subject","register_description","master_register_id","register_purpose","program_id","program_mnemonic","register_icon","has_image","dedup_is_enabled","dedup_threshold_score","register_rank") VALUES 
+('2ee76070-76eb-44af-8c1a-8593ef19e3b5','Family','Families','Family Register',NULL,'REGISTER',NULL,NULL,NULL,'FALSE','FALSE',0,1),
+('df634318-ef1b-424c-8173-0a5aa1a4b4af','FamilyMember','Family Members','Family Member Register','2ee76070-76eb-44af-8c1a-8593ef19e3b5','REGISTER',NULL,NULL,NULL,'FALSE','FALSE',0,2);
 
 INSERT INTO "public"."data_models" ("data_model_id","data_model_mnemonic","pattern_for_data_model","response_template_file_id","is_active") VALUES 
 ('DM1','DCI','$.body.message.search_request[0].data.reg_record_type=>(?i).*dci.*','dci_commons_response.json.j2','TRUE'),
