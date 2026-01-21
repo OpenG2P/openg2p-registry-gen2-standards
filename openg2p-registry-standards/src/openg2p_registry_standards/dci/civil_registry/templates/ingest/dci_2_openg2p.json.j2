@@ -1,105 +1,64 @@
-{# expanded is a JSON-LD expanded list #}
 {% set p = expanded[0] %}
 
-{# ---------- helpers ---------- #}
-
-{# Safe first element (returns {} if list is missing/empty) #}
-{% macro first(obj) -%}
-  {{ (obj | default([]) | first) or {} }}
-{%- endmacro %}
-
-{# Safe @value extraction from expanded JSON-LD list field #}
-{% macro val(obj) -%}
-  {{ (obj | default([]) | first or {}).get('@value', '') }}
-{%- endmacro %}
-
-{# Safe numeric extraction: returns null if missing #}
-{% macro num_or_null(obj) -%}
-  {{ ((obj | default([]) | first or {}).get('@value')) if (obj | default([]) | length > 0) else 'null' }}
-{%- endmacro %}
-
-{# Build an array of values: ["x","y"] from expanded list [{@value:x},{@value:y}] #}
-{% macro list_values(obj) -%}
-[
-  {%- for it in obj | default([]) -%}
-    "{{ it.get('@value','') }}"{% if not loop.last %},{% endif %}
-  {%- endfor -%}
-]
-{%- endmacro %}
-
-{# ---------- normalized references ---------- #}
-
-{# name object #}
-{% set name = first(p['https://schema.spdci.org/common/v1name'] | default([])) %}
-
-{# identifiers: support both identifier (single) and identifiers (list) #}
-{% set ids_single = p['https://schema.spdci.org/common/v1identifier'] | default([]) %}
-{% set ids_multi  = p['https://schema.spdci.org/common/v1identifiers'] | default([]) %}
-{% set ids = ids_single if (ids_single | length > 0) else ids_multi %}
-{% set id0 = first(ids) %}
-{% set id_value = val(id0['https://schema.spdci.org/common/v1identifier_value'] | default([])) %}
-
-{# birth_place can be string OR object in compact form, but expanded will usually be:
-   - either a node object
-   - or an @id value
-#}
-{% set birth_place = first(p['https://schema.spdci.org/common/v1birth_place'] | default([])) %}
-{% set birth_place_name = val(birth_place['https://schema.spdci.org/common/v1name'] | default([])) %}
-{% set birth_geo = first(birth_place['https://schema.spdci.org/common/v1geo'] | default([])) %}
-
-{# address branch #}
-{% set address = first(p['https://schema.spdci.org/common/v1address'] | default([])) %}
-{% set geo_loc = first(address['https://schema.spdci.org/common/v1geo_location'] | default([])) %}
-{% set plus_code = first(geo_loc['https://schema.spdci.org/common/v1plus_code'] | default([])) %}
-{% set geometry = first(plus_code['https://schema.spdci.org/common/v1geometry'] | default([])) %}
-{% set location = first(geometry['https://schema.spdci.org/common/v1location'] | default([])) %}
-
-{# internal_record_id and foundational_id MAY or MAY NOT exist in expanded data #}
-{% set internal_record_id = val(p['https://schema.spdci.org/common/v1internal_record_id'] | default([])) %}
-{% set foundational_id_direct = val(p['https://schema.spdci.org/common/v1foundational_id'] | default([])) %}
-
-{# pick foundational_id:
-   1) explicit foundational_id if present
-   2) else identifier_value from identifier/identifiers
-#}
-{% set foundational_id = foundational_id_direct if foundational_id_direct else id_value %}
+{% set name0 = (p.get('https://schema.spdci.org/common/v1name', [{}]) | first) %}
+{% set birth_place0 = (p.get('https://schema.spdci.org/common/v1birth_place', [{}]) | first) %}
+{% set birth_geo0 = (birth_place0.get('https://schema.spdci.org/common/v1geo', [{}]) | first) %}
+{% set address0 = (p.get('https://schema.spdci.org/common/v1address', [{}]) | first) %}
+{% set geo_loc0 = (address0.get('https://schema.spdci.org/common/v1geo_location', [{}]) | first) %}
+{% set plus_code0 = (geo_loc0.get('https://schema.spdci.org/common/v1plus_code', [{}]) | first) %}
+{% set geometry0 = (plus_code0.get('https://schema.spdci.org/common/v1geometry', [{}]) | first) %}
+{% set location0 = (geometry0.get('https://schema.spdci.org/common/v1location', [{}]) | first) %}
+{% set identifier0 = (p.get('https://schema.spdci.org/common/v1identifier', [{}]) | first) %}
 
 {
-  "surname": "{{ val(name['https://schema.spdci.org/common/v1surname'] | default([])) }}",
-  "given_name": "{{ val(name['https://schema.spdci.org/common/v1given_name'] | default([])) }}",
-  "second_name": "{{ val(name['https://schema.spdci.org/common/v1second_name'] | default([])) }}",
-  "prefix": "{{ val(name['https://schema.spdci.org/common/v1prefix'] | default([])) }}",
-  "suffix": "{{ val(name['https://schema.spdci.org/common/v1suffix'] | default([])) }}",
+  "surname": "{{ (name0.get('https://schema.spdci.org/common/v1surname', [{}]) | first).get('@value','') }}",
+  "given_name": "{{ (name0.get('https://schema.spdci.org/common/v1given_name', [{}]) | first).get('@value','') }}",
+  "second_name": "{{ (name0.get('https://schema.spdci.org/common/v1second_name', [{}]) | first).get('@value','') }}",
+  "prefix": "{{ (name0.get('https://schema.spdci.org/common/v1prefix', [{}]) | first).get('@value','') }}",
+  "suffix": "{{ (name0.get('https://schema.spdci.org/common/v1suffix', [{}]) | first).get('@value','') }}",
 
-  "phone_numbers": {{ list_values(p['https://schema.spdci.org/common/v1phone_number'] | default([])) }},
-  "emails": {{ list_values(p['https://schema.spdci.org/common/v1email'] | default([])) }},
+  "phone_numbers": [
+    {% for ph in p.get('https://schema.spdci.org/common/v1phone_number', []) %}
+      "{{ ph.get('@value','') }}"{% if not loop.last %},{% endif %}
+    {% endfor %}
+  ],
 
-  "sex": "{{ val(p['https://schema.spdci.org/common/v1sex'] | default([])) }}",
-  "birth_date": "{{ val(p['https://schema.spdci.org/common/v1birth_date'] | default([])) }}",
+  "emails": [
+    {% for em in p.get('https://schema.spdci.org/common/v1email', []) %}
+      "{{ em.get('@value','') }}"{% if not loop.last %},{% endif %}
+    {% endfor %}
+  ],
 
-  "birth_place_name": "{{ birth_place_name }}",
-  "birth_place_lat": {{ num_or_null(birth_geo['https://schema.spdci.org/common/v1latitude'] | default([])) }},
-  "birth_place_lng": {{ num_or_null(birth_geo['https://schema.spdci.org/common/v1longitude'] | default([])) }},
+  "sex": "{{ (p.get('https://schema.spdci.org/common/v1sex', [{}]) | first).get('@value','') }}",
+  "birth_date": "{{ (p.get('https://schema.spdci.org/common/v1birth_date', [{}]) | first).get('@value','') }}",
 
-  "death_date": "{{ val(p['https://schema.spdci.org/common/v1death_date'] | default([])) }}",
-  "death_place": "{{ val(p['https://schema.spdci.org/common/v1death_place'] | default([])) }}",
+  "birth_place_name": "{{ (birth_place0.get('https://schema.spdci.org/common/v1name', [{}]) | first).get('@value','') }}",
+  "birth_place_lat": {{ (birth_geo0.get('https://schema.spdci.org/common/v1latitude', [{}]) | first).get('@value', 'null') }},
+  "birth_place_lng": {{ (birth_geo0.get('https://schema.spdci.org/common/v1longitude', [{}]) | first).get('@value', 'null') }},
 
-  "address_line1": "{{ val(address['https://schema.spdci.org/common/v1address_line1'] | default([])) }}",
-  "address_line2": "{{ val(address['https://schema.spdci.org/common/v1address_line2'] | default([])) }}",
-  "locality": "{{ val(address['https://schema.spdci.org/common/v1locality'] | default([])) }}",
-  "sub_region_code": "{{ val(address['https://schema.spdci.org/common/v1sub_region_code'] | default([])) }}",
-  "region_code": "{{ val(address['https://schema.spdci.org/common/v1region_code'] | default([])) }}",
-  "postal_code": "{{ val(address['https://schema.spdci.org/common/v1postal_code'] | default([])) }}",
-  "country_code": "{{ val(address['https://schema.spdci.org/common/v1country_code'] | default([])) }}",
+  "death_date": "{{ (p.get('https://schema.spdci.org/common/v1death_date', [{}]) | first).get('@value','') }}",
+  "death_place": "{{ (p.get('https://schema.spdci.org/common/v1death_place', [{}]) | first).get('@value','') }}",
 
-  "plus_code": "{{ val(plus_code['https://schema.spdci.org/common/v1global_code'] | default([])) }}",
-  "geo_lat": {{ num_or_null(location['https://schema.spdci.org/common/v1latitude'] | default([])) }},
-  "geo_lng": {{ num_or_null(location['https://schema.spdci.org/common/v1longitude'] | default([])) }},
+  "address_line1": "{{ (address0.get('https://schema.spdci.org/common/v1address_line1', [{}]) | first).get('@value','') }}",
+  "address_line2": "{{ (address0.get('https://schema.spdci.org/common/v1address_line2', [{}]) | first).get('@value','') }}",
+  "locality": "{{ (address0.get('https://schema.spdci.org/common/v1locality', [{}]) | first).get('@value','') }}",
+  "administrative_area_small_id": "{{ (address0.get('https://schema.spdci.org/common/v1sub_region_code', [{}]) | first).get('@value','') }}",
+  "administrative_area_large_id": "{{ (address0.get('https://schema.spdci.org/common/v1region_code', [{}]) | first).get('@value','') }}",
+  "postal_code": "{{ (address0.get('https://schema.spdci.org/common/v1postal_code', [{}]) | first).get('@value','') }}",
+  "country_code": "{{ (address0.get('https://schema.spdci.org/common/v1country_code', [{}]) | first).get('@value','') }}",
 
-  "marital_status": "{{ val(p['https://schema.spdci.org/common/v1marital_status'] | default([])) }}",
-  "marriage_date": "{{ val(p['https://schema.spdci.org/common/v1marriage_date'] | default([])) }}",
-  "divorce_date": "{{ val(p['https://schema.spdci.org/common/v1divorce_date'] | default([])) }}",
+  "plus_code": "{{ (plus_code0.get('https://schema.spdci.org/common/v1global_code', [{}]) | first).get('@value','') }}",
 
-  "internal_record_id": "{{ internal_record_id }}",
-  "foundational_id": "{{ foundational_id }}"
+  "geo_lat": {{ (location0.get('https://schema.spdci.org/common/v1latitude', [{}]) | first).get('@value','null') }},
+  "geo_lng": {{ (location0.get('https://schema.spdci.org/common/v1longitude', [{}]) | first).get('@value','null') }},
+
+  "marital_status": "{{ (p.get('https://schema.spdci.org/common/v1marital_status', [{}]) | first).get('@value','') }}",
+  "marriage_date": "{{ (p.get('https://schema.spdci.org/common/v1marriage_date', [{}]) | first).get('@value','') }}",
+  "divorce_date": "{{ (p.get('https://schema.spdci.org/common/v1divorce_date', [{}]) | first).get('@value','') }}",
+
+  "link_internal_record_id": "{{ (p.get('https://schema.spdci.org/common/v1link_internal_record_id', [{}]) | first).get('@value','') }}",
+  "foundational_id": "{{ (identifier0.get('https://schema.spdci.org/common/v1identifier_value', [{}]) | first).get('@value','') }}",
+
+  "edit_action": "ADD",
+  "internal_record_id": ""
 }
