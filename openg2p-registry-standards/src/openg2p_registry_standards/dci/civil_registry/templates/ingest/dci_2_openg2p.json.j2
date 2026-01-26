@@ -10,55 +10,69 @@
 {% set location0 = (geometry0.get('https://schema.spdci.org/common/v1location', [{}]) | first) %}
 {% set identifier0 = (p.get('https://schema.spdci.org/common/v1identifier', [{}]) | first) %}
 
-{
-  "surname": "{{ (name0.get('https://schema.spdci.org/common/v1surname', [{}]) | first).get('@value','') }}",
-  "given_name": "{{ (name0.get('https://schema.spdci.org/common/v1given_name', [{}]) | first).get('@value','') }}",
-  "second_name": "{{ (name0.get('https://schema.spdci.org/common/v1second_name', [{}]) | first).get('@value','') }}",
-  "prefix": "{{ (name0.get('https://schema.spdci.org/common/v1prefix', [{}]) | first).get('@value','') }}",
-  "suffix": "{{ (name0.get('https://schema.spdci.org/common/v1suffix', [{}]) | first).get('@value','') }}",
+{% set surname = (name0.get('https://schema.spdci.org/common/v1surname', [{}]) | first).get('@value','') %}
+{% set given_name = (name0.get('https://schema.spdci.org/common/v1given_name', [{}]) | first).get('@value','') %}
+{% set middle_name = (name0.get('https://schema.spdci.org/common/v1second_name', [{}]) | first).get('@value','') %}
+{% set prefix = (name0.get('https://schema.spdci.org/common/v1prefix', [{}]) | first).get('@value','') %}
+{% set suffix = (name0.get('https://schema.spdci.org/common/v1suffix', [{}]) | first).get('@value','') %}
+{% set foundational_id = (identifier0.get('https://schema.spdci.org/common/v1identifier_value', [{}]) | first).get('@value','') %}
+{% set sex_value = (p.get('https://schema.spdci.org/common/v1sex', [{}]) | first).get('@value','') %}
+{% set birth_date = (p.get('https://schema.spdci.org/common/v1birth_date', [{}]) | first).get('@value','') %}
+{% set phone_numbers = p.get('https://schema.spdci.org/common/v1phone_number', []) %}
+{% set emails = p.get('https://schema.spdci.org/common/v1email', []) %}
+{% set marital_status = (p.get('https://schema.spdci.org/common/v1marital_status', [{}]) | first).get('@value','') %}
+{% set marriage_date = (p.get('https://schema.spdci.org/common/v1marriage_date', [{}]) | first).get('@value','') %}
+{% set divorce_date = (p.get('https://schema.spdci.org/common/v1divorce_date', [{}]) | first).get('@value','') %}
+{% set latitude = (location0.get('https://schema.spdci.org/common/v1latitude', [{}]) | first).get('@value', '') %}
+{% set longitude = (location0.get('https://schema.spdci.org/common/v1longitude', [{}]) | first).get('@value', '') %}
+{% set plus_code = (plus_code0.get('https://schema.spdci.org/common/v1global_code', [{}]) | first).get('@value','') %}
+{% set address_line_1 = (address0.get('https://schema.spdci.org/common/v1address_line1', [{}]) | first).get('@value','') %}
+{% set address_line_2 = (address0.get('https://schema.spdci.org/common/v1address_line2', [{}]) | first).get('@value','') %}
+{% set postal_code = (address0.get('https://schema.spdci.org/common/v1postal_code', [{}]) | first).get('@value','') %}
+{% set country_code = (address0.get('https://schema.spdci.org/common/v1country_code', [{}]) | first).get('@value','') %}
+{% set geo_lowest_level = (address0.get('https://schema.spdci.org/common/v1sub_region_code', [{}]) | first).get('@value','') %}
+{% set link_internal_record_id = (p.get('https://schema.spdci.org/common/v1link_internal_record_id', [{}]) | first).get('@value','') %}
 
-  "phone_numbers": [
-    {% for ph in p.get('https://schema.spdci.org/common/v1phone_number', []) %}
+{
+  "internal_record_id": ""
+  {% if link_internal_record_id %},"link_internal_record_id": "{{ link_internal_record_id }}"{% endif %}
+  {% if surname or given_name %},"record_name": "{{ (given_name + ' ' + surname).strip() }}"{% endif %}
+  
+  {% if foundational_id %},"foundational_id": "{{ foundational_id }}"{% endif %}
+  {% if given_name %},"first_name": "{{ given_name }}"{% endif %}
+  {% if middle_name %},"middle_name": "{{ middle_name }}"{% endif %}
+  {% if surname %},"last_name": "{{ surname }}"{% endif %}
+  {% if given_name %},"given_name": "{{ given_name }}"{% endif %}
+  {% if prefix %},"prefix": "{{ prefix }}"{% endif %}
+  {% if suffix %},"suffix": "{{ suffix }}"{% endif %}
+  
+  {% if sex_value %},"gender": "{{ sex_value | upper }}"{% endif %}
+  {% if birth_date %},"birth_date": "{{ birth_date }}"{% endif %}
+  
+  {% if phone_numbers %},"phone_numbers": [
+    {% for ph in phone_numbers %}
       "{{ ph.get('@value','') }}"{% if not loop.last %},{% endif %}
     {% endfor %}
-  ],
-
-  "emails": [
-    {% for em in p.get('https://schema.spdci.org/common/v1email', []) %}
+  ]{% endif %}
+  
+  {% if emails %},"emails": [
+    {% for em in emails %}
       "{{ em.get('@value','') }}"{% if not loop.last %},{% endif %}
     {% endfor %}
-  ],
-
-  "sex": "{{ (p.get('https://schema.spdci.org/common/v1sex', [{}]) | first).get('@value','') }}",
-  "birth_date": "{{ (p.get('https://schema.spdci.org/common/v1birth_date', [{}]) | first).get('@value','') }}",
-
-  "birth_place_name": "{{ (birth_place0.get('https://schema.spdci.org/common/v1name', [{}]) | first).get('@value','') }}",
-  "birth_place_lat": {{ (birth_geo0.get('https://schema.spdci.org/common/v1latitude', [{}]) | first).get('@value', 'null') }},
-  "birth_place_lng": {{ (birth_geo0.get('https://schema.spdci.org/common/v1longitude', [{}]) | first).get('@value', 'null') }},
-
-  "death_date": "{{ (p.get('https://schema.spdci.org/common/v1death_date', [{}]) | first).get('@value','') }}",
-  "death_place": "{{ (p.get('https://schema.spdci.org/common/v1death_place', [{}]) | first).get('@value','') }}",
-
-  "address_line1": "{{ (address0.get('https://schema.spdci.org/common/v1address_line1', [{}]) | first).get('@value','') }}",
-  "address_line2": "{{ (address0.get('https://schema.spdci.org/common/v1address_line2', [{}]) | first).get('@value','') }}",
-  "locality": "{{ (address0.get('https://schema.spdci.org/common/v1locality', [{}]) | first).get('@value','') }}",
-  "administrative_area_small_id": "{{ (address0.get('https://schema.spdci.org/common/v1sub_region_code', [{}]) | first).get('@value','') }}",
-  "administrative_area_large_id": "{{ (address0.get('https://schema.spdci.org/common/v1region_code', [{}]) | first).get('@value','') }}",
-  "postal_code": "{{ (address0.get('https://schema.spdci.org/common/v1postal_code', [{}]) | first).get('@value','') }}",
-  "country_code": "{{ (address0.get('https://schema.spdci.org/common/v1country_code', [{}]) | first).get('@value','') }}",
-
-  "plus_code": "{{ (plus_code0.get('https://schema.spdci.org/common/v1global_code', [{}]) | first).get('@value','') }}",
-
-  "geo_lat": {{ (location0.get('https://schema.spdci.org/common/v1latitude', [{}]) | first).get('@value','null') }},
-  "geo_lng": {{ (location0.get('https://schema.spdci.org/common/v1longitude', [{}]) | first).get('@value','null') }},
-
-  "marital_status": "{{ (p.get('https://schema.spdci.org/common/v1marital_status', [{}]) | first).get('@value','') }}",
-  "marriage_date": "{{ (p.get('https://schema.spdci.org/common/v1marriage_date', [{}]) | first).get('@value','') }}",
-  "divorce_date": "{{ (p.get('https://schema.spdci.org/common/v1divorce_date', [{}]) | first).get('@value','') }}",
-
-  "link_internal_record_id": "{{ (p.get('https://schema.spdci.org/common/v1link_internal_record_id', [{}]) | first).get('@value','') }}",
-  "foundational_id": "{{ (identifier0.get('https://schema.spdci.org/common/v1identifier_value', [{}]) | first).get('@value','') }}",
-
-  "edit_action": "ADD",
-  "internal_record_id": ""
+  ]{% endif %}
+  
+  {% if marital_status %},"marital_status": "{{ marital_status | upper }}"{% endif %}
+  {% if marriage_date %},"marriage_date": "{{ marriage_date }}"{% endif %}
+  {% if divorce_date %},"divorce_date": "{{ divorce_date }}"{% endif %}
+  
+  {% if latitude %},"latitude": {{ latitude }}{% endif %}
+  {% if longitude %},"longitude": {{ longitude }}{% endif %}
+  {% if plus_code %},"plus_code": "{{ plus_code }}"{% endif %}
+  {% if address_line_1 %},"address_line_1": "{{ address_line_1 }}"{% endif %}
+  {% if address_line_2 %},"address_line_2": "{{ address_line_2 }}"{% endif %}
+  {% if postal_code %},"postal_code": "{{ postal_code }}"{% endif %}
+  {% if country_code %},"country_code": "{{ country_code }}"{% endif %}
+  {% if geo_lowest_level %},"geo_lowest_level_value_id": "{{ geo_lowest_level }}"{% endif %}
+  
+  ,"edit_action": "ADD"
 }
