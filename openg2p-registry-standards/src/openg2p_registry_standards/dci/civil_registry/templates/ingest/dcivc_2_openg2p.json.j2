@@ -1,44 +1,26 @@
 {% set d = expanded %}
 
+{% set given_name = d.get('given_name', '') %}
+{% set middle_name = d.get('middle_name', '') %}
+{% set family_name = d.get('family_name', '') %}
+{% set foundational_id = d.get('id', '') %}
+{% set gender = d.get('gender', '') %}
+{% set birth_date = d.get('birth_date', '') %}
+{% set link_internal_record_id = d.get('link_internal_record_id', '') %}
+
 {
-  "surname": "{{ d['family_name'] | default('') }}",
-  "given_name": "{{ d['given_name'] | default('') }}",
-  "second_name": "{{ d['middle_name'] | default('') }}",
-  "prefix": "",
-  "suffix": "",
-
-  "phone_numbers": [],
-  "emails": [],
-
-  "sex": "{{ d['gender'] | default('') }}",
-  "birth_date": "{{ d['birth_date'] | default('') }}",
-
-  "birth_place_name": "{{ d['birth_place']['name'] | default('') }}",
-  "birth_place_lat": "",
-  "birth_place_lng": "",
-
-  "death_date": "",
-  "death_place": "",
-
-  "address_line1": "",
-  "address_line2": "",
-  "locality": "{{ d['birth_place']['birth_place_codes']['district'] | default('') }}",
-  "sub_region_code": "{{ d['birth_place']['birth_place_codes']['region'] | default('') }}",
-  "region_code": "{{ d['birth_place']['birth_place_codes']['region'] | default('') }}",
-  "postal_code": "",
-  "country_code": "{{ d['birth_place']['birth_place_codes']['country'] | default('') }}",
-
-  "plus_code": "",
-  "geo_lat": "",
-  "geo_lng": "",
-
-  "marital_status": "{{ d['parental_status'] | default('') }}",
-  "marriage_date": "",
-  "divorce_date": "",
-
-  "link_internal_record_id": "{{ d['link_internal_record_id'] | default('') }}",
-  "foundational_id": "{{ d['id'] | default('') }}",
-
-  "edit_action": "ADD",
-  "internal_record_id": ""
+  "internal_record_id": "",
+  {% if link_internal_record_id %}"link_internal_record_id": "{{ link_internal_record_id }}",{% endif %}
+  {% if given_name or family_name %}"record_name": "{{ given_name }} {{ family_name }}".strip(),{% endif %}
+  
+  {% if foundational_id %}"foundational_id": "{{ foundational_id }}",{% endif %}
+  {% if given_name %}"first_name": "{{ given_name }}",{% endif %}
+  {% if middle_name %}"middle_name": "{{ middle_name }}",{% endif %}
+  {% if family_name %}"last_name": "{{ family_name }}",{% endif %}
+  {% if given_name %}"given_name": "{{ given_name }}",{% endif %}
+  
+  {% if gender %}"gender": "{{ gender | upper }}",{% endif %}
+  {% if birth_date %}"birth_date": "{{ birth_date }}",{% endif %}
+  
+  "edit_action": "ADD"
 }

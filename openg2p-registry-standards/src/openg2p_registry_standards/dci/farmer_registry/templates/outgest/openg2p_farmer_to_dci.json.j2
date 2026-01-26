@@ -1,76 +1,75 @@
-{# =========================
-   Setup
-   ========================= #}
-{% set df = expanded['display_fields'] %}
-{% set fid = expanded['foundational_id'] %}
-{% set gid = expanded['link_internal_record_id'] %}
-{% set members = expanded['member_list'] if 'member_list' in expanded else [] %}
-{% set farms = expanded['farm_details'] if 'farm_details' in expanded else [] %}
-{% set machines = expanded['machineries_details'] if 'machineries_details' in expanded else [] %}
+{% set d = expanded %}
+
+{% set foundational_id = d.get('foundational_id', '') %}
+{% set first_name = d.get('first_name', '') %}
+{% set last_name = d.get('last_name', '') %}
+{% set birth_date = d.get('birth_date', '') %}
+{% set gender = d.get('gender', '') %}
+{% set is_disabled = d.get('is_disabled', false) %}
+{% set marital_status = d.get('marital_status', '') %}
+{% set registration_date = d.get('registration_date', '') %}
+{% set last_approved_at = d.get('last_approved_at', '') %}
+{% set link_internal_record_id = d.get('link_internal_record_id', '') %}
 
 {
   "famer_personal_details": {
     "member_identifier": {
-      "identifier_type": "NationalID",
-      "identifier_value": {{ '"' ~ fid ~ '"' if fid is not none else '""' }}
+      "identifier_type": "UIN",
+      "identifier_value": "{{ foundational_id }}"
     },
     "demographic_info": {
       "identifier": {
-        "identifier_type": "NationalID",
-        "identifier_value": {{ '"' ~ fid ~ '"' if fid is not none else '""' }}
+        "identifier_type": "UIN",
+        "identifier_value": "{{ foundational_id }}"
       },
       "name": {
-        "first_name": {{ '"' ~ df['first_name'] ~ '"' if 'first_name' in df else '""' }},
-        "last_name": {{ '"' ~ df['last_name'] ~ '"' if 'last_name' in df else '""' }}
+        "first_name": "{{ first_name }}",
+        "last_name": "{{ last_name }}"
       },
-      "date_of_birth": {{ '"' ~ df['date_of_birth'] ~ 'T00:00:00Z"' if 'date_of_birth' in df else '""' }},
-      "gender": {{ '"' ~ df['gender'] ~ '"' if 'gender' in df else '""' }}
+      "date_of_birth": "{{ birth_date }}",
+      "gender": "{{ gender | lower }}"
     }
   },
-
   "family_details": {
     "group_identifier": [
       {
-        "identifier_type": "NationalID",
-        "identifier_value": {{ '"' ~ gid ~ '"' if gid is not none else '""' }}
+        "identifier_type": "FAM",
+        "identifier_value": "{{ link_internal_record_id }}"
       }
     ],
     "group_type": "family",
-    "poverty_score": {{ expanded['poverty_score'] if 'poverty_score' in expanded else '""' }},
-    "poverty_score_type": {{ '"' ~ expanded['poverty_score_type'] ~ '"' if 'poverty_score_type' in expanded else '""' }},
+    "poverty_score": "",
+    "poverty_score_type": "",
     "group_head_info": {
       "member_identifier": [
         {
-          "identifier_type": "NationalID",
-          "identifier_value": {{ '"' ~ fid ~ '"' if fid is not none else '""' }}
+          "identifier_type": "UIN",
+          "identifier_value": "{{ foundational_id }}"
         }
       ],
       "demographic_info": {
         "identifier": {
-          "identifier_type": "NationalID",
-          "identifier_value": {{ '"' ~ fid ~ '"' if fid is not none else '""' }}
+          "identifier_type": "UIN",
+          "identifier_value": "{{ foundational_id }}"
         },
         "name": {
-          "first_name": {{ '"' ~ df['first_name'] ~ '"' if 'first_name' in df else '""' }},
-          "last_name": {{ '"' ~ df['last_name'] ~ '"' if 'last_name' in df else '""' }}
+          "first_name": "{{ first_name }}",
+          "last_name": "{{ last_name }}"
         },
-        "date_of_birth": {{ '"' ~ df['date_of_birth'] ~ 'T00:00:00Z"' if 'date_of_birth' in df else '""' }},
-        "gender": {{ '"' ~ df['gender'] ~ '"' if 'gender' in df else '""' }}
+        "date_of_birth": "{{ birth_date }}",
+        "gender": "{{ gender | lower }}"
       },
-      "is_disabled": {{ 'true' if df.get('is_disabled') | string | lower == 'true' else 'false' }},
-      "marital_status": {{ '"' ~ df['marital_status'] ~ '"' if 'marital_status' in df else '""' }},
-      "registration_date": {{ '"' ~ expanded['registration_date'] ~ '"' if 'registration_date' in expanded else '""' }}
+      "is_disabled": {{ 'true' if is_disabled else 'false' }},
+      "marital_status": "{{ marital_status | lower }}",
+      "registration_date": "{{ registration_date }}"
     },
-    "group_size": {{ members | length }},
-    "member_list": {{ members }},
-    "registration_date": {{ '"' ~ expanded['registration_date'] ~ '"' if 'registration_date' in expanded else '""' }},
-    "last_updated": {{ '"' ~ expanded['last_updated'] ~ '"' if 'last_updated' in expanded else '""' }}
+    "group_size": 0,
+    "member_list": [],
+    "registration_date": "{{ registration_date }}",
+    "last_updated": "{{ last_approved_at }}"
   },
-
-  "farm_details": {{ farms }},
-
-  "machineries_details": {{ machines }},
-
-  "registration_date": {{ '"' ~ expanded['registration_date'] ~ '"' if 'registration_date' in expanded else '""' }},
-  "last_updated": {{ '"' ~ expanded['last_updated'] ~ '"' if 'last_updated' in expanded else '""' }}
+  "farm_details": [],
+  "machineries_details": [],
+  "registration_date": "{{ registration_date }}",
+  "last_updated": "{{ last_approved_at }}"
 }
