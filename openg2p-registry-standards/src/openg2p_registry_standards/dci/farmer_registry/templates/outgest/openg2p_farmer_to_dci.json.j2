@@ -9,67 +9,178 @@
 {% set marital_status = d.get('marital_status', '') %}
 {% set registration_date = d.get('registration_date', '') %}
 {% set last_approved_at = d.get('last_approved_at', '') %}
-{% set link_internal_record_id = d.get('link_internal_record_id', '') %}
+
+{% set household = d.get('household', {}) %}
+{% set household_functional_id = household.get('functional_record_id', '') %}
+{% set poverty_score = household.get('poverty_score', '') %}
+{% set poverty_score_type = household.get('poverty_score_type', '') %}
+{% set household_members = household.get('household_member', []) %}
+{% set household_registration_date = household.get('created_at', '') %}
+{% set household_last_approved = household.get('last_approved_at', '') %}
+
+{% set land_list = d.get('land', []) %}
+{% set machinery_list = d.get('machinery', []) %}
 
 {
   "famer_personal_details": {
     "member_identifier": {
-      "identifier_type": "UIN",
-      "identifier_value": "{{ foundational_id }}"
-    },
-    "demographic_info": {
-      "identifier": {
-        "identifier_type": "UIN",
-        "identifier_value": "{{ foundational_id }}"
-      },
-      "name": {
-        "first_name": "{{ first_name }}",
-        "last_name": "{{ last_name }}"
-      },
-      "date_of_birth": "{{ birth_date }}",
-      "gender": "{{ gender | lower }}"
+      "identifier_type": "UIN"
+      ,"identifier_value": "{{ foundational_id }}"
     }
-  },
-  "family_details": {
+    ,"demographic_info": {
+      "identifier": {
+        "identifier_type": "UIN"
+        ,"identifier_value": "{{ foundational_id }}"
+      }
+      ,"name": {
+        "first_name": "{{ first_name }}"
+        ,"last_name": "{{ last_name }}"
+      }
+      ,"date_of_birth": "{{ birth_date }}"
+      ,"gender": "{{ gender | lower }}"
+    }
+  }
+  ,"family_details": {
     "group_identifier": [
       {
-        "identifier_type": "FAM",
-        "identifier_value": "{{ link_internal_record_id }}"
+        "identifier_type": "FAM"
+        ,"identifier_value": "{{ household_functional_id }}"
       }
-    ],
-    "group_type": "family",
-    "poverty_score": "",
-    "poverty_score_type": "",
-    "group_head_info": {
+    ]
+    ,"group_type": "family"
+    ,"poverty_score": "{{ poverty_score }}"
+    ,"poverty_score_type": "{{ poverty_score_type }}"
+    ,"group_head_info": {
       "member_identifier": [
         {
-          "identifier_type": "UIN",
-          "identifier_value": "{{ foundational_id }}"
+          "identifier_type": "UIN"
+          ,"identifier_value": "{{ foundational_id }}"
         }
-      ],
-      "demographic_info": {
+      ]
+      ,"demographic_info": {
         "identifier": {
-          "identifier_type": "UIN",
-          "identifier_value": "{{ foundational_id }}"
-        },
-        "name": {
-          "first_name": "{{ first_name }}",
-          "last_name": "{{ last_name }}"
-        },
-        "date_of_birth": "{{ birth_date }}",
-        "gender": "{{ gender | lower }}"
-      },
-      "is_disabled": {{ 'true' if is_disabled else 'false' }},
-      "marital_status": "{{ marital_status | lower }}",
-      "registration_date": "{{ registration_date }}"
-    },
-    "group_size": 0,
-    "member_list": [],
-    "registration_date": "{{ registration_date }}",
-    "last_updated": "{{ last_approved_at }}"
-  },
-  "farm_details": [],
-  "machineries_details": [],
-  "registration_date": "{{ registration_date }}",
-  "last_updated": "{{ last_approved_at }}"
+          "identifier_type": "UIN"
+          ,"identifier_value": "{{ foundational_id }}"
+        }
+        ,"name": {
+          "first_name": "{{ first_name }}"
+          ,"last_name": "{{ last_name }}"
+        }
+        ,"date_of_birth": "{{ birth_date }}"
+        ,"gender": "{{ gender | lower }}"
+      }
+      ,"is_disabled": {{ 'true' if is_disabled else 'false' }}
+      ,"marital_status": "{{ marital_status | lower }}"
+      ,"registration_date": "{{ registration_date }}"
+    }
+    ,"group_size": {{ household_members | length }}
+    ,"member_list": [
+      {% for member in household_members %}
+      {
+        "member_identifier": [
+          {
+            "@type": "Identifier"
+            ,"identifier_type": "UIN"
+            ,"identifier_value": "{{ member.get('foundational_id', '') }}"
+          }
+        ]
+        ,"demographic_info": {
+          "spdci:identifier": [
+            {
+              "@type": "Identifier"
+              ,"identifier_type": "UIN"
+              ,"identifier_value": "{{ member.get('foundational_id', '') }}"
+            }
+          ]
+          ,"name": {
+            "@type": "Name"
+            ,"surname": "{{ member.get('last_name', '') }}"
+            ,"given_name": "{{ member.get('first_name', '') }}"
+            ,"prefix": "{{ member.get('prefix', '') }}"
+            ,"suffix": "{{ member.get('suffix', '') }}"
+          }
+          ,"sex": "{{ member.get('gender', '') | lower }}"
+          ,"birth_date": "{{ member.get('birth_date', '') }}"
+          ,"registration_date": "{{ member.get('registration_date', '') }}"
+        }
+        ,"is_disabled": {{ 'true' if member.get('is_disabled', false) else 'false' }}
+        ,"marital_status": "{{ member.get('marital_status', '') | lower }}"
+        ,"registration_date": "{{ member.get('registration_date', '') }}"
+      }{% if not loop.last %},{% endif %}
+      {% endfor %}
+    ]
+    ,"registration_date": "{{ household_registration_date }}"
+    ,"last_updated": "{{ household_last_approved }}"
+  }
+  ,"farm_details": [
+    {% for land in land_list %}
+    {
+      "place": {
+        "name": "{{ land.get('address_line_2', '') }}"
+        ,"geo": {
+          "@type": "spdci:GeoLocation"
+          ,"latitude": {{ land.get('latitude', '') }}
+          ,"longitude": {{ land.get('longitude', '') }}
+        }
+      }
+      ,"farm_type": ""
+      ,"farming_activities": [
+        {
+          "crop_production": [
+            {% for crop in land.get('crop', []) %}
+            {
+              "activity_group": "{{ crop.get('activity_group', '') }}"
+              ,"crop_type": "{{ crop.get('crop_type', '') }}"
+              ,"variety": "{{ crop.get('variety', '') }}"
+              ,"season": "{{ crop.get('season', '') }}"
+              ,"end_use": [
+                "{{ crop.get('end_use', '') }}"
+              ]
+              ,"irrigation": {{ 'false' if crop.get('irrigation', '') == 'Rainfed' else 'true' }}
+              ,"irrigation_water": [
+                "{{ crop.get('irrigation_water', '') }}"
+              ]
+              ,"fertilizer_type": [
+                "{{ crop.get('fertilizer_type', '') }}"
+              ]
+              ,"registration_date": "{{ crop.get('created_at', '') }}"
+              ,"last_updated": "{{ crop.get('last_approved_at', '') }}"
+            }{% if not loop.last %},{% endif %}
+            {% endfor %}
+          ]
+          ,"animal_production": [
+            {% for livestock in land.get('livestock', []) %}
+            {
+              "type": "{{ livestock.get('livestock_type', '') }}"
+              ,"count": {{ livestock.get('count', 0) }}
+              ,"livestock_system": "{{ livestock.get('livestock_system', '') }}"
+              ,"registration_date": "{{ livestock.get('created_at', '') }}"
+              ,"last_updated": "{{ livestock.get('last_approved_at', '') }}"
+            }{% if not loop.last %},{% endif %}
+            {% endfor %}
+          ]
+          ,"mixed_farming": {{ 'true' if (land.get('crop', []) | length > 0 and land.get('livestock', []) | length > 0) else 'false' }}
+          ,"agri_support_activities": ""
+          ,"aqua_support_activities": ""
+          ,"aqua_culture": ""
+          ,"registration_date": "{{ land.get('created_at', '') }}"
+          ,"last_updated": "{{ land.get('last_approved_at', '') }}"
+        }
+      ]
+    }{% if not loop.last %},{% endif %}
+    {% endfor %}
+  ]
+  ,"machineries_details": [
+    {% for machinery in machinery_list %}
+    {
+      "type": "{{ machinery.get('type', '') }}"
+      ,"count": {{ machinery.get('count', 0) }}
+      ,"equipement_source": "{{ machinery.get('equipement_source', '') }}"
+      ,"registration_date": "{{ machinery.get('created_at', '') }}"
+      ,"last_updated": "{{ machinery.get('last_approved_at', '') }}"
+    }{% if not loop.last %},{% endif %}
+    {% endfor %}
+  ]
+  ,"registration_date": "{{ registration_date }}"
+  ,"last_updated": "{{ last_approved_at }}"
 }

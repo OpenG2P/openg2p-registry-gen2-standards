@@ -9,18 +9,17 @@
 {% set link_internal_record_id = d.get('link_internal_record_id', '') %}
 
 {
-  "internal_record_id": "",
-  {% if link_internal_record_id %}"link_internal_record_id": "{{ link_internal_record_id }}",{% endif %}
-  {% if given_name or family_name %}"record_name": "{{ given_name }} {{ family_name }}".strip(),{% endif %}
-  
-  {% if foundational_id %}"foundational_id": "{{ foundational_id }}",{% endif %}
-  {% if given_name %}"first_name": "{{ given_name }}",{% endif %}
-  {% if middle_name %}"middle_name": "{{ middle_name }}",{% endif %}
-  {% if family_name %}"last_name": "{{ family_name }}",{% endif %}
-  {% if given_name %}"given_name": "{{ given_name }}",{% endif %}
-  
-  {% if gender %}"gender": "{{ gender | upper }}",{% endif %}
-  {% if birth_date %}"birth_date": "{{ birth_date }}",{% endif %}
-  
-  "edit_action": "ADD"
+  "internal_record_id": ""
+
+  {% if link_internal_record_id %},"link_internal_record_id": "{{ link_internal_record_id }}"{% endif %}
+  {% if given_name or family_name %},"record_name": "{{ (given_name + ' ' + family_name).strip() }}"{% endif %}
+  {% if foundational_id %},"foundational_id": "{{ foundational_id }}"{% endif %}
+  {% if given_name %},"first_name": "{{ given_name }}"{% endif %}
+  {% if middle_name %},"middle_name": "{{ middle_name }}"{% endif %}
+  {% if family_name %},"last_name": "{{ family_name }}"{% endif %}
+  {% if given_name %},"given_name": "{{ given_name }}"{% endif %}
+  {% if gender %},"gender": "{{ gender | upper }}"{% endif %}
+  {% if birth_date %},"birth_date": "{{ birth_date }}"{% endif %}
+
+  ,"edit_action": "ADD"
 }
