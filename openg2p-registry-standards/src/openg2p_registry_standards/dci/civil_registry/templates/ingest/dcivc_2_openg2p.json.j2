@@ -1,16 +1,35 @@
 {% set d = expanded %}
+{% set disclosures = d.get('disclosures', []) %}
+{% set payload = d.get('jwt', {}).get('payload', {}) %}
 
-{% set given_name = d.get('given_name', '') %}
-{% set middle_name = d.get('middle_name', '') %}
-{% set family_name = d.get('family_name', '') %}
-{% set foundational_id = d.get('id', '') %}
-{% set gender = d.get('gender', '') %}
-{% set birth_date = d.get('birth_date', '') %}
+{% set disclosures_dict = {} %}
+{% for disc in disclosures %}
+  {% set _ = disclosures_dict.update({disc.get('key', ''): disc.get('value', '')}) %}
+{% endfor %}
+
+{% set given_name = disclosures_dict.get('given_name', '') %}
+{% set middle_name = disclosures_dict.get('middle_name', '') %}
+{% set family_name = disclosures_dict.get('family_name', '') %}
+{% set birthdate = disclosures_dict.get('birthdate', '') %}
+{% set place_of_birth = disclosures_dict.get('place_of_birth', {}) %}
+
+{% set foundational_id = payload.get('id', '') %}
+{% set sex = payload.get('sex', '') %}
+{% set gender = '' %}
+{% if sex == 0 %}
+  {% set gender = 'UNKNOWN' %}
+{% elif sex == 1 %}
+  {% set gender = 'MALE' %}
+{% elif sex == 2 %}
+  {% set gender = 'FEMALE' %}
+{% elif sex == 9 %}
+  {% set gender = 'OTHERS' %}
+{% endif %}
+
 {% set link_internal_record_id = d.get('link_internal_record_id', '') %}
 
 {
   "internal_record_id": ""
-
   {% if link_internal_record_id %},"link_internal_record_id": "{{ link_internal_record_id }}"{% endif %}
   {% if given_name or family_name %},"record_name": "{{ (given_name + ' ' + family_name).strip() }}"{% endif %}
   {% if foundational_id %},"foundational_id": "{{ foundational_id }}"{% endif %}
@@ -18,8 +37,8 @@
   {% if middle_name %},"middle_name": "{{ middle_name }}"{% endif %}
   {% if family_name %},"last_name": "{{ family_name }}"{% endif %}
   {% if given_name %},"given_name": "{{ given_name }}"{% endif %}
-  {% if gender %},"gender": "{{ gender | upper }}"{% endif %}
-  {% if birth_date %},"birth_date": "{{ birth_date }}"{% endif %}
-
+  {% if gender %},"gender": "{{ gender }}"{% endif %}
+  {% if birthdate %},"birth_date": "{{ birthdate }}"{% endif %}
+  ,"marital_status": "SINGLE"
   ,"edit_action": "ADD"
 }
